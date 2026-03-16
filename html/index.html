@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Quantity Measurement</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+<h1>Welcome To Quantity Measurement</h1>
+</header>
+
+
+<h3>CHOOSE TYPE</h3>
+
+<div class="type-container">
+
+<input type="radio" name="type" id="length" checked>
+<label for="length" class="card">
+<img src="../images/length.png">
+<p>Length</p>
+</label>
+
+<input type="radio" name="type" id="weight">
+<label for="weight" class="card">
+<img src="../images/weight.png">
+<p>Weight</p>
+</label>
+
+<input type="radio" name="type" id="temperature">
+<label for="temperature" class="card">
+<img src="../images/temperature.png">
+<p>Temperature</p>
+</label>
+
+<input type="radio" name="type" id="volume">
+<label for="volume" class="card">
+<img src="../images/volume.png">
+<p>Volume</p>
+</label>
+
+</div>
+
+
+<h3>CHOOSE ACTION</h3>
+
+<div class="action-container">
+
+<input type="radio" name="action" id="comparison" checked>
+<label for="comparison" class="action-btn">Comparison</label>
+
+<input type="radio" name="action" id="conversion">
+<label for="conversion" class="action-btn">Conversion</label>
+
+<input type="radio" name="action" id="arithmetic">
+<label for="arithmetic" class="action-btn">Arithmetic</label>
+
+</div>
+<div class="input-section">
+
+<div class="field">
+<label>FROM</label>
+<div class="box">
+<input type="number" value="1">
+<select>
+<option>Kilometer</option>
+<option>Meters</option>
+<option>Centimeters</option>
+<option>Millimeters</option>
+</select>
+</div>
+</div>
+
+<div class="field">
+<label>TO</label>
+<div class="box">
+<input type="number" value="1000">
+<select>
+<option>Meters</option>
+<option>Kilometer</option>
+<option>Centimeters</option>
+<option>Millimeters</option>
+</select>
+</div>
+</div>
+
+</div>
+
+
+
+</div>
+
+</body>
+</html>
