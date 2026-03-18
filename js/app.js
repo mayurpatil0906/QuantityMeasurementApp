@@ -1,3 +1,4 @@
+import { getUnits } from "./api.js";
 document.addEventListener("DOMContentLoaded", async () => {
 
     // STATE OBJECT
@@ -46,30 +47,52 @@ function attachEventListeners() {
     });
 }
 async function loadUnits(type) {
-    try {
-        const res = await fetch("http://localhost:3000/units");
-        const data = await res.json();
 
-        const filtered = data.filter(u => u.type === type);
+    const units = await getUnits(type);
 
-        const selects = document.querySelectorAll(".box select");
-
-        selects.forEach(select => {
-            select.innerHTML = "";
-
-            filtered.forEach(unit => {
-                const option = document.createElement("option");
-                option.value = unit.symbol;
-                option.textContent = unit.label;
-                select.appendChild(option);
-            });
-        });
-
-    } catch (error) {
-        alert("Server unavailable");
-        console.error(error);
+    if (!units || units.length === 0) {
+        alert("No units found or server error");
+        return;
     }
+
+    const selects = document.querySelectorAll(".box select");
+
+    selects.forEach(select => {
+        select.innerHTML = "";
+
+        units.forEach(unit => {
+            const option = document.createElement("option");
+            option.value = unit.symbol;
+            option.textContent = unit.label;
+            select.appendChild(option);
+        });
+    });
 }
+// async function loadUnits(type) {
+//     try {
+//         // const res = await fetch("http://localhost:3000/units");
+//         // const data = await res.json();
+
+//         const filtered = data.filter(u => u.type === type);
+
+//         const selects = document.querySelectorAll(".box select");
+
+//         selects.forEach(select => {
+//             select.innerHTML = "";
+
+//             filtered.forEach(unit => {
+//                 const option = document.createElement("option");
+//                 option.value = unit.symbol;
+//                 option.textContent = unit.label;
+//                 select.appendChild(option);
+//             });
+//         });
+
+//     } catch (error) {
+//         alert("Server unavailable");
+//         console.error(error);
+//     }
+// }
 function toggleOperators(show) {
     const operatorRow = document.getElementById("operator-row");
 
