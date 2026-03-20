@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     handleConversion(); // initial conversion
 });
 
-// ✅ EVENTS
+// EVENTS
 function attachEventListeners() {
 
     const fromInput = document.querySelectorAll(".box input")[0];
@@ -37,7 +37,7 @@ function attachEventListeners() {
     });
 }
 
-// ✅ LOAD UNITS
+//LOAD UNITS
 async function loadUnits(type) {
 
     const units = await getUnits(type);
@@ -64,7 +64,7 @@ async function loadUnits(type) {
     });
 }
 
-// ✅ CONVERSION FUNCTION
+//CONVERSION FUNCTION
 async function handleConversion() {
 
     const fromInput = document.querySelectorAll(".box input")[0];
@@ -86,7 +86,7 @@ async function handleConversion() {
     }
 }
 
-// OTHER FUNCTIONS (same)
+
 function toggleOperators(show) {
     const operatorRow = document.getElementById("operator-row");
     if (!operatorRow) return;
