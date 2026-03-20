@@ -1,63 +1,55 @@
 import { getUnits } from "./api.js";
+import { convertValue } from "./conversion.js";
+
 document.addEventListener("DOMContentLoaded", async () => {
 
-    // STATE OBJECT
-    const state = {
-        type: "Length",
-        action: "Conversion",
-        fromVal: null,
-        fromUnit: "",
-        toVal: null,
-        toUnit: "",
-        operator: "+"
-    };
-
-    // INITIAL CALLS
     attachEventListeners();
+
     await loadUnits("Length");
+
     toggleOperators(false);
+
     loadHistory();
 
+    handleConversion(); // initial conversion
 });
+
+// ✅ EVENTS
 function attachEventListeners() {
 
-    // TYPE CHANGE
-    const typeRadios = document.querySelectorAll('input[name="type"]');
+    const fromInput = document.querySelectorAll(".box input")[0];
+    fromInput.addEventListener("input", handleConversion);
 
+    const selects = document.querySelectorAll(".box select");
+    selects.forEach(select => {
+        select.addEventListener("change", handleConversion);
+    });
+
+    const typeRadios = document.querySelectorAll('input[name="type"]');
     typeRadios.forEach(radio => {
         radio.addEventListener("change", async (e) => {
             const selectedType = e.target.id;
+
             await loadUnits(capitalize(selectedType));
-        });
-    });
 
-    // ACTION CHANGE
-    const actionRadios = document.querySelectorAll('input[name="action"]');
-
-    actionRadios.forEach(radio => {
-        radio.addEventListener("change", (e) => {
-            const action = e.target.id;
-
-            if (action === "arithmetic") {
-                toggleOperators(true);
-            } else {
-                toggleOperators(false);
-            }
+            handleConversion(); // important
         });
     });
 }
+
+// ✅ LOAD UNITS
 async function loadUnits(type) {
 
     const units = await getUnits(type);
 
     if (!units || units.length === 0) {
-        alert("No units found or server error");
+        alert("No units found");
         return;
     }
 
     const selects = document.querySelectorAll(".box select");
 
-    selects.forEach(select => {
+    selects.forEach((select, index) => {
         select.innerHTML = "";
 
         units.forEach(unit => {
@@ -66,53 +58,51 @@ async function loadUnits(type) {
             option.textContent = unit.label;
             select.appendChild(option);
         });
+
+        // default selection
+        select.selectedIndex = index === 0 ? 0 : 1;
     });
 }
-// async function loadUnits(type) {
-//     try {
-//         // const res = await fetch("http://localhost:3000/units");
-//         // const data = await res.json();
 
-//         const filtered = data.filter(u => u.type === type);
+// ✅ CONVERSION FUNCTION
+async function handleConversion() {
 
-//         const selects = document.querySelectorAll(".box select");
+    const fromInput = document.querySelectorAll(".box input")[0];
+    const toInput = document.querySelectorAll(".box input")[1];
 
-//         selects.forEach(select => {
-//             select.innerHTML = "";
+    const fromSelect = document.querySelectorAll(".box select")[0];
+    const toSelect = document.querySelectorAll(".box select")[1];
 
-//             filtered.forEach(unit => {
-//                 const option = document.createElement("option");
-//                 option.value = unit.symbol;
-//                 option.textContent = unit.label;
-//                 select.appendChild(option);
-//             });
-//         });
+    const value = parseFloat(fromInput.value);
+    const fromUnit = fromSelect.value;
+    const toUnit = toSelect.value;
 
-//     } catch (error) {
-//         alert("Server unavailable");
-//         console.error(error);
-//     }
-// }
+    if (isNaN(value) || !fromUnit || !toUnit) return;
+
+    const result = await convertValue(value, fromUnit, toUnit);
+
+    if (result !== null) {
+        toInput.value = result;
+    }
+}
+
+// OTHER FUNCTIONS (same)
 function toggleOperators(show) {
     const operatorRow = document.getElementById("operator-row");
-
     if (!operatorRow) return;
-
     operatorRow.style.display = show ? "flex" : "none";
 }
+
 async function loadHistory() {
     try {
         const res = await fetch("http://localhost:3000/history");
         const history = await res.json();
-
         console.log("History:", history);
-
-        // Later you will render it in UI
-
     } catch (error) {
-        console.error("Error loading history", error);
+        console.error(error);
     }
 }
+
 function capitalize(text) {
     return text.charAt(0).toUpperCase() + text.slice(1);
 }

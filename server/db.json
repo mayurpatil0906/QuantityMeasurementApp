@@ -44,7 +44,10 @@
     { "id": 21, "from": "mL", "to": "L", "factor": 0.001, "formula": null },
     { "id": 22, "from": "mL", "to": "gal", "factor": 0.000264172, "formula": null },
     { "id": 23, "from": "gal", "to": "L", "factor": 3.78541, "formula": null },
-    { "id": 24, "from": "gal", "to": "mL", "factor": 3785.41, "formula": null }
+    { "id": 24, "from": "gal", "to": "mL", "factor": 3785.41, "formula": null },
+    { "id": 25, "from": "km", "to": "mm", "factor": 1000000, "formula": null },
+    { "id": 26, "from": "m", "to": "mm", "factor": 1000, "formula": null },
+    { "id": 27, "from": "mm", "to": "m", "factor": 0.001, "formula": null }
   ],
  
   "history": []
