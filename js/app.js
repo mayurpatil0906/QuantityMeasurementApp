@@ -1,55 +1,73 @@
-import { getUnits } from "./api.js";
+import { getUnits, saveHistory } from "./api.js";
 import { convertValue } from "./conversion.js";
 
+let isUserTyping = false;
+let currentType = "Length";
+let lastResult = "";
+let lastValue = "";   // 🔥 NEW (store input)
+let isLoadingUnits = false;
+
+// INIT
 document.addEventListener("DOMContentLoaded", async () => {
-
     attachEventListeners();
-
-    await loadUnits("Length");
-
-    toggleOperators(false);
-
-    loadHistory();
-
-    handleConversion(); // initial conversion
+    await loadUnits(currentType);
 });
 
-// ✅ EVENTS
+// EVENTS
 function attachEventListeners() {
 
     const fromInput = document.querySelectorAll(".box input")[0];
-    fromInput.addEventListener("input", handleConversion);
 
-    const selects = document.querySelectorAll(".box select");
-    selects.forEach(select => {
-        select.addEventListener("change", handleConversion);
+    fromInput.addEventListener("input", () => {
+        isUserTyping = true;
+        lastValue = fromInput.value;   // ✅ store value
+        handleConversion();
     });
 
     const typeRadios = document.querySelectorAll('input[name="type"]');
+
     typeRadios.forEach(radio => {
         radio.addEventListener("change", async (e) => {
-            const selectedType = e.target.id;
 
-            await loadUnits(capitalize(selectedType));
+            const selectedType = capitalize(e.target.id);
 
-            handleConversion(); // important
+            if (selectedType === currentType) return;
+
+            currentType = selectedType;
+
+            await loadUnits(selectedType);
+
+            // 🔥 RESTORE VALUE + RESULT AFTER UI CHANGE
+            const fromInput = document.querySelectorAll(".box input")[0];
+            const toInput = document.querySelectorAll(".box input")[1];
+
+            if (lastValue !== "") {
+                fromInput.value = lastValue;
+            }
+
+            if (lastResult !== "") {
+                toInput.value = lastResult;
+            }
         });
     });
 }
 
-// ✅ LOAD UNITS
+// LOAD UNITS
 async function loadUnits(type) {
+
+    isLoadingUnits = true;
 
     const units = await getUnits(type);
 
     if (!units || units.length === 0) {
         alert("No units found");
+        isLoadingUnits = false;
         return;
     }
 
     const selects = document.querySelectorAll(".box select");
 
-    selects.forEach((select, index) => {
+    selects.forEach((select) => {
         select.innerHTML = "";
 
         units.forEach(unit => {
@@ -58,14 +76,15 @@ async function loadUnits(type) {
             option.textContent = unit.label;
             select.appendChild(option);
         });
-
-        // default selection
-        select.selectedIndex = index === 0 ? 0 : 1;
     });
+
+    isLoadingUnits = false;
 }
 
-// ✅ CONVERSION FUNCTION
+// CONVERSION
 async function handleConversion() {
+
+    if (isLoadingUnits) return;
 
     const fromInput = document.querySelectorAll(".box input")[0];
     const toInput = document.querySelectorAll(".box input")[1];
@@ -77,32 +96,46 @@ async function handleConversion() {
     const fromUnit = fromSelect.value;
     const toUnit = toSelect.value;
 
-    if (isNaN(value) || !fromUnit || !toUnit) return;
+    if (isNaN(value) || !fromUnit || !toUnit) {
+        if (lastResult !== "") {
+            toInput.value = lastResult;
+        }
+        return;
+    }
 
     const result = await convertValue(value, fromUnit, toUnit);
 
     if (result !== null) {
-        toInput.value = result;
+
+        const finalResult = parseFloat(result.toFixed(4));
+
+        // ✅ store values
+        lastResult = finalResult;
+        lastValue = value;
+
+        // ✅ show result
+        toInput.value = finalResult;
+
+        if (!isUserTyping) return;
+
+        const selectedType = document.querySelector('input[name="type"]:checked').id;
+        const selectedAction = document.querySelector('input[name="action"]:checked').id;
+
+        const record = {
+            type: capitalize(selectedType),
+            action: capitalize(selectedAction),
+            expression: `${value} ${fromUnit} → ${toUnit}`,
+            result: finalResult,
+            timestamp: new Date().toISOString()
+        };
+
+        saveHistory(record).catch(() => {});
+
+        isUserTyping = false;
     }
 }
 
-// OTHER FUNCTIONS (same)
-function toggleOperators(show) {
-    const operatorRow = document.getElementById("operator-row");
-    if (!operatorRow) return;
-    operatorRow.style.display = show ? "flex" : "none";
-}
-
-async function loadHistory() {
-    try {
-        const res = await fetch("http://localhost:3000/history");
-        const history = await res.json();
-        console.log("History:", history);
-    } catch (error) {
-        console.error(error);
-    }
-}
-
+// HELPER
 function capitalize(text) {
     return text.charAt(0).toUpperCase() + text.slice(1);
 }
