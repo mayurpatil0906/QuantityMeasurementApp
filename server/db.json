@@ -312,6 +312,46 @@
       "expression": "2 km → m",
       "result": 2000,
       "timestamp": "2026-03-22T09:05:49.398Z"
+    },
+    {
+      "id": "7583",
+      "type": "Temperature",
+      "action": "Conversion",
+      "expression": "12 C → K",
+      "result": 285.15,
+      "timestamp": "2026-03-22T09:33:36.628Z"
+    },
+    {
+      "id": "6f60",
+      "type": "Length",
+      "action": "Conversion",
+      "expression": "2 km → km",
+      "result": 2,
+      "timestamp": "2026-03-22T09:33:38.443Z"
+    },
+    {
+      "id": "7772",
+      "type": "Temperature",
+      "action": "Conversion",
+      "expression": "2 C → F",
+      "result": 35.6,
+      "timestamp": "2026-03-22T09:39:38.246Z"
+    },
+    {
+      "id": "967b",
+      "type": "Length",
+      "action": "Conversion",
+      "expression": "11 km → cm",
+      "result": 1100000,
+      "timestamp": "2026-03-22T09:39:46.048Z"
+    },
+    {
+      "id": "3cad",
+      "type": "Length",
+      "action": "Conversion",
+      "expression": "13 km → m",
+      "result": 13000,
+      "timestamp": "2026-03-22T09:47:36.200Z"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
