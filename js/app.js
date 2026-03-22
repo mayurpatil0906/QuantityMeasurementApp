@@ -4,7 +4,7 @@ import { convertValue } from "./conversion.js";
 let isUserTyping = false;
 let currentType = "Length";
 let lastResult = "";
-let lastValue = "";   // 🔥 NEW (store input)
+let lastValue = "";   // store input
 let isLoadingUnits = false;
 
 // INIT
@@ -20,7 +20,7 @@ function attachEventListeners() {
 
     fromInput.addEventListener("input", () => {
         isUserTyping = true;
-        lastValue = fromInput.value;   // ✅ store value
+        lastValue = fromInput.value;   //store value
         handleConversion();
     });
 
@@ -37,7 +37,7 @@ function attachEventListeners() {
 
             await loadUnits(selectedType);
 
-            // 🔥 RESTORE VALUE + RESULT AFTER UI CHANGE
+            // RESTORE VALUE + RESULT AFTER UI CHANGE
             const fromInput = document.querySelectorAll(".box input")[0];
             const toInput = document.querySelectorAll(".box input")[1];
 
@@ -109,11 +109,11 @@ async function handleConversion() {
 
         const finalResult = parseFloat(result.toFixed(4));
 
-        // ✅ store values
+        // store values
         lastResult = finalResult;
         lastValue = value;
 
-        // ✅ show result
+        // show result
         toInput.value = finalResult;
 
         if (!isUserTyping) return;
