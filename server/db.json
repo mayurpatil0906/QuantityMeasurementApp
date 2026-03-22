@@ -392,6 +392,22 @@
       "expression": "2 ton * 1000 kg",
       "result": 2,
       "timestamp": "2026-03-22T13:57:24.103Z"
+    },
+    {
+      "id": "6b8e",
+      "type": "Temperature",
+      "action": "Conversion",
+      "expression": "1 C → F",
+      "result": 33.8,
+      "timestamp": "2026-03-22T14:34:44.160Z"
+    },
+    {
+      "id": "27cd",
+      "type": "Length",
+      "action": "Arithmetic",
+      "expression": "1 km * 2 m",
+      "result": 0.002,
+      "timestamp": "2026-03-22T14:34:49.855Z"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
