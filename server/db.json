@@ -296,6 +296,22 @@
       "expression": "2 ton → g",
       "result": 2000000,
       "timestamp": "2026-03-22T08:50:22.631Z"
+    },
+    {
+      "id": "c1d3",
+      "type": "Temperature",
+      "action": "Conversion",
+      "expression": "1 C → F",
+      "result": 33.8,
+      "timestamp": "2026-03-22T09:05:44.302Z"
+    },
+    {
+      "id": "b35b",
+      "type": "Length",
+      "action": "Comparison",
+      "expression": "2 km → m",
+      "result": 2000,
+      "timestamp": "2026-03-22T09:05:49.398Z"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
