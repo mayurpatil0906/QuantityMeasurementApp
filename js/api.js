@@ -70,3 +70,18 @@ export async function saveHistory(record) {
         console.error("Failed to save history:", error);
     }
 }
+export async function getHistory() {
+    try {
+        const res = await fetch(`${BASE_URL}/history?_sort=timestamp&_order=desc`);
+
+        if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
+        }
+
+        return await res.json();
+
+    } catch (error) {
+        console.error("History Load Failed:", error);
+        return []; // as per use case
+    }
+}

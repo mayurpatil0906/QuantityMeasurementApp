@@ -1,16 +1,19 @@
-import { getUnits, saveHistory } from "./api.js";
+
 import { convertValue } from "./conversion.js";
+import { getUnits, saveHistory, getHistory } from "./api.js";
 
 let isUserTyping = false;
 let currentType = "Length";
 let lastResult = "";
-let lastValue = "";   // 🔥 NEW (store input)
+let lastValue = "";   // NEW (store input)
 let isLoadingUnits = false;
 
 // INIT
 document.addEventListener("DOMContentLoaded", async () => {
     attachEventListeners();
     await loadUnits(currentType);
+    loadHistory();
+    
 });
 
 // EVENTS
@@ -20,7 +23,7 @@ function attachEventListeners() {
 
     fromInput.addEventListener("input", () => {
         isUserTyping = true;
-        lastValue = fromInput.value;   // ✅ store value
+        lastValue = fromInput.value;   // store value
         handleConversion();
     });
 
@@ -37,7 +40,7 @@ function attachEventListeners() {
 
             await loadUnits(selectedType);
 
-            // 🔥 RESTORE VALUE + RESULT AFTER UI CHANGE
+            // RESTORE VALUE + RESULT AFTER UI CHANGE
             const fromInput = document.querySelectorAll(".box input")[0];
             const toInput = document.querySelectorAll(".box input")[1];
 
@@ -109,11 +112,11 @@ async function handleConversion() {
 
         const finalResult = parseFloat(result.toFixed(4));
 
-        // ✅ store values
+        // store values
         lastResult = finalResult;
         lastValue = value;
 
-        // ✅ show result
+        // show result
         toInput.value = finalResult;
 
         if (!isUserTyping) return;
@@ -129,7 +132,12 @@ async function handleConversion() {
             timestamp: new Date().toISOString()
         };
 
-        saveHistory(record).catch(() => {});
+        try {
+            await saveHistory(record);
+            loadHistory(); // refresh history after save
+        } catch (error) {
+            console.error("History save failed:", error);
+        }
 
         isUserTyping = false;
     }
@@ -138,4 +146,26 @@ async function handleConversion() {
 // HELPER
 function capitalize(text) {
     return text.charAt(0).toUpperCase() + text.slice(1);
+}
+async function loadHistory() {
+
+    const container = document.getElementById("historyContainer");
+
+    if (!container) return; // safety
+
+    const history = await getHistory();
+
+    if (!history || history.length === 0) {
+        container.innerHTML = "<p>No history yet.</p>";
+        return;
+    }
+
+    container.innerHTML = "";
+
+    history.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "history-item";
+        div.textContent = `${item.expression} = ${item.result}`;
+        container.appendChild(div);
+    });
 }
